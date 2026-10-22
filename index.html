@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Warranty Claim Readiness Review</title>
+  <style>
+    :root{font-family:Inter,system-ui,sans-serif;color:#172033;background:#eef2f7}body{margin:0}main{max-width:980px;margin:auto;padding:24px 18px 60px}header,.card{background:#fff;border:1px solid #d9e0ea;border-radius:6px;padding:22px;margin-bottom:16px;box-shadow:0 2px 8px #1720330d}header{border-top:5px solid #123b70}.header-row,.section-heading{display:flex;justify-content:space-between;align-items:center;gap:16px}h1{margin:0 0 6px;font-size:1.55rem}h2{margin:0 0 16px;font-size:1.15rem}.muted{color:#657089}fieldset{border:0;padding:0;margin:0 0 20px}legend{font-weight:750;color:#123b70;border-bottom:1px solid #d9e0ea;padding-bottom:8px;margin-bottom:14px;width:100%}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px 18px}.field{min-width:0}label{display:block;font-size:.88rem;font-weight:700}.required{color:#a32323;font-weight:500;font-size:.78rem}.help{display:block;margin-top:4px;color:#657089;font-size:.78rem;font-weight:400}input,select,textarea{width:100%;box-sizing:border-box;margin-top:6px;padding:10px;border:1px solid #b9c4d3;border-radius:4px;background:#fff;font:inherit}textarea{min-height:82px;resize:vertical}.wide{grid-column:1/-1}.actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;border-top:1px solid #d9e0ea;padding-top:16px}button{background:#123b70;color:#fff;border:0;border-radius:4px;padding:11px 18px;font-weight:700;cursor:pointer}button.secondary{background:#e7edf6;color:#123b70}.hidden{display:none}.status{display:inline-block;padding:6px 10px;border-radius:99px;font-weight:750}.PASS{background:#dff5e5;color:#116329}.WARNING{background:#fff1c7;color:#805b00}.BLOCK{background:#ffe0e0;color:#9c1f1f}.UNKNOWN{background:#e8e1ff;color:#5039a1}.finding{border-left:5px solid #cbd2df;padding:12px 14px;margin:10px 0;background:#fafbfc}.finding.BLOCK{border-left-color:#c43d3d}.finding.WARNING{border-left-color:#d79e00}.finding.UNKNOWN{border-left-color:#7259d6}.finding.PASS{border-left-color:#2d9a4b}.notice{padding:10px 12px;background:#f5f8fc;border-left:4px solid #5279a8;font-size:.9rem}
+    @media(max-width:650px){.grid{grid-template-columns:1fr}.wide{grid-column:auto}.header-row,.section-heading{align-items:flex-start;flex-direction:column}}
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="header-row"><div><h1>Warranty Claim Readiness Review</h1><p class="muted">Bakersfield Hyundai · Service Department</p></div><span class="status UNKNOWN">Training mode</span></div>
+    <p class="muted">Standalone classroom demonstration using synthetic vehicle and customer information. No external systems are connected.</p>
+  </header>
+
+  <section class="card">
+    <div class="section-heading"><h2>Warranty case information</h2><span class="muted"><span class="required">*</span> Required field</span></div>
+    <div class="notice">Select a sample case to demonstrate different claim-readiness outcomes, or edit the fields and review the case.</div>
+    <form id="case-form" onsubmit="event.preventDefault(); reviewCase()">
+      <fieldset><legend>Case selection</legend><div class="grid">
+        <div class="field"><label for="scenario">Load sample case <span class="help">Optional classroom demonstration tool</span></label><select id="scenario" onchange="loadScenario()"></select></div>
+        <div class="field"><label for="claim_type">Claim type <span class="required">*</span></label><input id="claim_type"></div>
+      </div></fieldset>
+      <fieldset><legend>Repair order and vehicle</legend><div class="grid">
+        <div class="field"><label for="vin">VIN <span class="required">*</span></label><input id="vin"></div>
+        <div class="field"><label for="ro_number">Repair order number <span class="required">*</span></label><input id="ro_number"></div>
+        <div class="field"><label for="ro_open_date">RO open date <span class="required">*</span></label><input id="ro_open_date" type="date"></div>
+        <div class="field"><label for="ro_close_date">RO close date <span class="required">*</span></label><input id="ro_close_date" type="date"></div>
+        <div class="field"><label for="mileage_in">Mileage in</label><input id="mileage_in" type="number"></div>
+        <div class="field"><label for="mileage_out">Mileage out</label><input id="mileage_out" type="number"></div>
+      </div></fieldset>
+      <fieldset><legend>Documentation and authorization</legend><div class="grid">
+        <div class="field"><label for="technician_id">Technician ID <span class="required">*</span></label><input id="technician_id"></div>
+        <div class="field"><label for="customer_initial_authorization">Customer authorization</label><select id="customer_initial_authorization"><option value="true">Yes</option><option value="false">No</option><option value="null">Unknown</option></select></div>
+        <div class="field"><label for="diagnostic_evidence_available">Diagnostic evidence</label><select id="diagnostic_evidence_available"><option value="true">Available</option><option value="false">Missing</option><option value="null">Unknown</option></select></div>
+        <div class="field wide"><label for="customer_complaint">Customer complaint <span class="required">*</span></label><textarea id="customer_complaint"></textarea></div>
+        <div class="field wide"><label for="technician_cause">Technician cause <span class="required">*</span></label><textarea id="technician_cause"></textarea></div>
+        <div class="field wide"><label for="technician_correction">Technician correction <span class="required">*</span></label><textarea id="technician_correction"></textarea></div>
+      </div></fieldset>
+      <div class="actions"><button type="submit">Review claim readiness</button><button type="button" class="secondary" onclick="loadScenario()">Reload sample</button></div>
+      <p id="error" class="muted"></p>
+    </form>
+  </section>
+
+  <section id="report" class="card hidden"><div class="section-heading"><h2>Review outcome</h2><span class="muted">Human review remains required</span></div><p><strong>Claim readiness:</strong> <span id="overall" class="status"></span></p><div id="findings"></div><p class="muted">This demonstration highlights evidence that should be inspected before submission. It does not guarantee claim payment or final warranty liability.</p></section>
+</main>
+<script>
+  const today = new Date('2026-10-22T12:00:00');
+  const labels = {clean:'Clean standard claim',missing_signature:'Missing customer authorization',incomplete_3c:'Incomplete technician narrative',engine_pa_missing:'Engine replacement — Prior Approval missing',deadline:'Claim approaching submission deadline',returned:'Returned claim approaching resubmission deadline',bad_part:'Part number inconsistency',sublet_missing_invoice:'Sublet missing final invoice',missing_digital:'Missing diagnostic evidence',ambiguous:'Ambiguous case — human review required'};
+  const base = {claim_type:'standard_warranty',vin:'KMH-SYNTHETIC-001',ro_number:'RO-SYN-1001',ro_open_date:'2026-09-01',ro_close_date:'2026-10-17',mileage_in:12000,mileage_out:12025,technician_id:'TECH-01',customer_initial_authorization:true,diagnostic_evidence_available:true,customer_complaint:'Synthetic test concern',technician_cause:'Verified modeled cause',technician_correction:'Repaired and tested'};
+  const scenarios = {clean:{},missing_signature:{customer_initial_authorization:false},incomplete_3c:{technician_cause:''},engine_pa_missing:{claim_type:'major_component_replacement',engine:true},deadline:{ro_close_date:'2026-09-25'},returned:{returned:true},bad_part:{badPart:true},sublet_missing_invoice:{sublet:true},missing_digital:{diagnostic_evidence_available:false},ambiguous:{claim_type:'',customer_initial_authorization:null,diagnostic_evidence_available:null}};
+  const fields = Object.keys(base);
+  const value = id => document.getElementById(id).value;
+  function set(id,v){document.getElementById(id).value=v ?? ''}
+  function loadScenario(){const name=value('scenario');const data={...base,...scenarios[name]};fields.forEach(id=>set(id,data[id]));set('customer_initial_authorization',String(data.customer_initial_authorization));set('diagnostic_evidence_available',String(data.diagnostic_evidence_available));document.getElementById('report').classList.add('hidden');document.getElementById('error').textContent=''}
+  function result(status,name,explanation,action){return {status,name,explanation,action}}
+  function reviewCase(){
+    const c={};fields.forEach(id=>c[id]=value(id));let findings=[];const name=value('scenario');const sample=scenarios[name]||{};
+    const age=Math.floor((today-new Date(c.ro_close_date+'T12:00:00'))/86400000);findings.push(result(age<=23?'PASS':age<=30?'WARNING':'BLOCK','Initial claim submission deadline',age<=30?'The modeled 30-day submission window has '+Math.max(0,30-age)+' day(s) remaining.':'The modeled 30-day window has elapsed.','Verify the current deadline and submit or escalate for review.'));
+    const missing=['ro_number','vin','ro_open_date','ro_close_date','customer_complaint','technician_cause','technician_correction','technician_id'].filter(id=>!c[id]);findings.push(result(missing.length?'BLOCK':'PASS','Repair order and 3C documentation',missing.length?'Missing: '+missing.join(', ')+'.':'Core RO and technician documentation is present.','Complete or inspect the repair order and technician narrative.'));
+    findings.push(result(c.customer_initial_authorization===null?'UNKNOWN':c.customer_initial_authorization==='false'?'BLOCK':'PASS','Customer authorization',c.customer_initial_authorization==='true'?'Customer authorization is recorded.':c.customer_initial_authorization==='false'?'Authorization evidence is missing or marked No.':'Authorization evidence cannot be established.','Inspect the signed authorization record.'));
+    findings.push(result(c.diagnostic_evidence_available===null?'UNKNOWN':c.diagnostic_evidence_available==='false'?'WARNING':'PASS','Digital documentation',c.diagnostic_evidence_available==='true'?'Diagnostic evidence is indicated as available.':c.diagnostic_evidence_available==='false'?'Applicable diagnostic evidence may be missing.':'The applicable evidence is unknown.','Verify the applicable photos, readings, documents, or video.'));
+    if(sample.engine)findings.push(result('BLOCK','Engine assembly Prior Approval','Engine replacement is selected but no Prior Approval number is recorded.','Verify the current Prior Approval requirement before submission.'));
+    if(sample.badPart)findings.push(result('BLOCK','Causal part consistency','The causal part cannot be tied consistently to the repair record.','Reconcile the part number and supporting documentation.'));
+    if(sample.sublet)findings.push(result('BLOCK','Sublet documentation','A sublet is present but the final invoice is missing.','Obtain the final itemized invoice and link it to the RO.'));
+    if(sample.returned)findings.push(result('WARNING','Returned claim resubmission deadline','The returned claim is approaching its modeled 30-day resubmission window.','Verify the return reason and resubmit or escalate.'));
+    const hasBlock=findings.some(x=>x.status==='BLOCK'),hasUnknown=findings.some(x=>x.status==='UNKNOWN');const overall=hasBlock?'NEEDS_CORRECTION':hasUnknown?'UNKNOWN_REQUIRES_HUMAN_REVIEW':'READY_FOR_HUMAN_REVIEW';const overallEl=document.getElementById('overall');overallEl.textContent=overall;overallEl.className='status '+(hasBlock?'BLOCK':hasUnknown?'UNKNOWN':'PASS');document.getElementById('findings').innerHTML=findings.map(f=>`<article class="finding ${f.status}"><span class="status ${f.status}">${f.status}</span> <strong>${f.name}</strong><p>${f.explanation}</p><small><b>Recommended action:</b> ${f.action}</small></article>`).join('');document.getElementById('report').classList.remove('hidden');document.getElementById('error').textContent='';document.getElementById('report').scrollIntoView({behavior:'smooth'});
+  }
+  const select=document.getElementById('scenario');Object.keys(labels).forEach(n=>select.add(new Option(labels[n],n)));select.value='clean';loadScenario();
+</script>
+</body>
+</html>
